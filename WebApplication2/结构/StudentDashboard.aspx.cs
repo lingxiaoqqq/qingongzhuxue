@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI.WebControls;
@@ -15,6 +16,39 @@ namespace WebApplication2
             {
                 LoadJobs();
                 LoadApplicationHistory(GetCurrentStudentId());
+                LoadNotifications();
+            }
+        }
+        private void LoadNotifications()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
+            // 使用 JOIN 查询获取通知的标题、内容和发布者的 username
+            string query = @"
+        SELECT TOP 5 n.title, n.content, t.username 
+        FROM Notifications n
+        JOIN Teachers t ON n.user_id = t.id
+        ORDER BY n.id DESC"; // 获取最新的5条通知，并替换user_id为username
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                try
+                {
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    // 将查询结果绑定到 Repeater 控件
+                    rptNotifications.DataSource = reader;
+                    rptNotifications.DataBind();
+                }
+                catch (SqlException ex)
+                {
+                    // 处理异常
+                    // Log the exception or handle it in a way that suits your application
+                    Response.Write($"<script>alert('加载通知失败: {ex.Message}');</script>");
+                }
             }
         }
 
@@ -34,11 +68,27 @@ namespace WebApplication2
         FROM Jobs j
         LEFT JOIN Applications a ON j.id = a.job_id AND a.user_id = @studentId";
 
+            // 添加筛选条件
             if (filterStatus != "All")
             {
-                query += " WHERE a.status = @status";
+                if (filterStatus == "Unapplied")
+                {
+                    // 如果是未申请，选择那些该学生没有申请的岗位
+                    query += " WHERE a.user_id IS NULL";
+                }
+                else if (filterStatus == "Applied")
+                {
+                    // 如果是已申请，选择那些该学生已经申请的岗位
+                    query += " WHERE a.user_id IS NOT NULL";
+                }
+                else
+                {
+                    // 其他状态，如审核通过，未通过等
+                    query += " WHERE a.status = @status";
+                }
             }
 
+            // 根据排序条件修改查询
             switch (sortOrder)
             {
                 case "TimeAsc": query += " ORDER BY j.time ASC"; break;
@@ -53,8 +103,12 @@ namespace WebApplication2
             {
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@studentId", studentId);
-                if (filterStatus != "All")
+
+                // 如果筛选条件不是“未申请”或“已申请”，则添加状态参数
+                if (filterStatus != "All" && filterStatus != "Unapplied" && filterStatus != "Applied")
+                {
                     cmd.Parameters.AddWithValue("@status", filterStatus);
+                }
 
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -63,6 +117,7 @@ namespace WebApplication2
                 conn.Close();
             }
         }
+
 
 
 

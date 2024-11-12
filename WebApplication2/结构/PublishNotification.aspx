@@ -1,11 +1,11 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="WebApplication2.Login" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PublishNotification.aspx.cs" Inherits="WebApplication2.PublishNotification" %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head runat="server">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>发布通知</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,59 +42,52 @@
         }
 
         .input-box input,
-        .input-box select {
+        .input-box textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
 
-         .btn {
-            width: 100%; /* Ensures button takes up full width */
-            height: 50px; /* Fixed height */
+        .btn {
+            width: 100%;
             padding: 10px;
             border: none;
-            background-color: #28a745;
+            background-color: #007bff;
             color: #fff;
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
-            text-align: center;
-            box-sizing: border-box; /* Ensures padding doesn't affect width/height */
         }
 
         .btn:hover {
-            background-color: #218838;
+            background-color: #0056b3;
         }
 
-        .switch-link {
+        .message {
             margin-top: 15px;
-            display: block;
+            color: red;
         }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
         <div class="container">
-            <h2>登录</h2>
+            <h2>发布通知</h2>
             <div class="input-box">
-                <label for="identity">身份</label>
-                <asp:DropDownList ID="ddlIdentity" runat="server">
-                    <asp:ListItem Text="学生" Value="Student"></asp:ListItem>
-                    <asp:ListItem Text="教师" Value="Teacher"></asp:ListItem>
-                </asp:DropDownList>
+                <label for="title">标题</label>
+                <asp:TextBox ID="txtTitle" runat="server" CssClass="form-control" />
             </div>
             <div class="input-box">
-                <label for="username">用户名</label>
-                <asp:TextBox ID="txtUsername" runat="server" CssClass="form-control" />
+                <label for="content">内容</label>
+                <asp:TextBox ID="txtContent" runat="server" TextMode="MultiLine" CssClass="form-control" />
             </div>
             <div class="input-box">
-                <label for="password">密码</label>
-                <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="form-control" />
+                <label for="user_id">用户ID</label>
+                <asp:TextBox ID="txtUserId" runat="server" CssClass="form-control" />
             </div>
-            <asp:Button ID="btnLogin" runat="server" Text="登录" CssClass="btn" OnClick="btnLogin_Click" />
-            <asp:Label ID="lblMessage" runat="server" Text=" " ForeColor="Red"></asp:Label>
-            <a href="Register.aspx" class="switch-link">点击注册</a>
+            <asp:Button ID="btnPublish" runat="server" Text="发布通知" CssClass="btn" OnClick="btnPublish_Click" />
+            <asp:Label ID="lblMessage" runat="server" CssClass="message"></asp:Label>
         </div>
     </form>
 </body>

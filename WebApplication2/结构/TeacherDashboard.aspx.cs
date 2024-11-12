@@ -30,6 +30,17 @@ namespace WebApplication2
             LoadJobs();
             LoadApplications();
         }
+        // 在TeacherDashboard.aspx.cs中实现按钮的跳转
+        protected void btnPublishNotification_Click(object sender, EventArgs e)
+        {
+            // 页面跳转到发布通知页面
+            Response.Redirect("PublishNotification.aspx");
+        }
+        protected void btn_AddJob(object sender, EventArgs e)
+        {
+            // 页面跳转到发布通知页面
+            Response.Redirect("AddJob.aspx");
+        }
 
         // 加载岗位信息
         private void LoadJobs()
@@ -102,20 +113,47 @@ namespace WebApplication2
             }
         }
 
-        private void DeleteJob(int jobId)
-        {
-            string query = "DELETE FROM Jobs WHERE Id = @jobId";
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@jobId", jobId);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                conn.Close();
-            }
+private void DeleteJob(int jobId)
+{
+    // 1. 首先检查是否存在与该岗位相关的申请记录
+    string checkQuery = "SELECT COUNT(1) FROM Applications WHERE job_id = @jobId";
 
-            LoadJobs(); // 删除后重新加载岗位数据
+    using (SqlConnection conn = new SqlConnection(connectionString))
+    {
+        SqlCommand checkCmd = new SqlCommand(checkQuery, conn);
+        checkCmd.Parameters.AddWithValue("@jobId", jobId);
+
+        conn.Open();
+        int applicationCount = (int)checkCmd.ExecuteScalar();
+        conn.Close();
+
+        // 如果存在申请记录，返回并提示用户
+        if (applicationCount > 0)
+        {
+                    // 显示提示信息，表明该岗位已有申请，无法删除
+                    string script = "alert('无法删除岗位，因为已有申请提交。');";
+                    Page.ClientScript.RegisterStartupScript(this.GetType(), "DeleteJobAlert", script, true);
+                    return; // 如果有申请记录，直接退出方法，不进行删除操作
         }
+    }
+
+    // 2. 如果没有申请记录，则执行删除操作
+    string deleteQuery = "DELETE FROM Jobs WHERE Id = @jobId";
+
+    using (SqlConnection conn = new SqlConnection(connectionString))
+    {
+        SqlCommand cmd = new SqlCommand(deleteQuery, conn);
+        cmd.Parameters.AddWithValue("@jobId", jobId);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+
+    // 3. 删除成功后重新加载岗位数据
+    LoadJobs();
+}
+
 
         // 申请审核 - 审核操作
         protected void gvApplications_RowCommand(object sender, GridViewCommandEventArgs e)

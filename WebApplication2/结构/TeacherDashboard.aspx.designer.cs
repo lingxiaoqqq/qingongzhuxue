@@ -42,6 +42,24 @@ namespace WebApplication2
         protected global::System.Web.UI.WebControls.Button btnViewStatistics;
 
         /// <summary>
+        /// btnPublishNotification 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnPublishNotification;
+
+        /// <summary>
+        /// btnAddjob 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddjob;
+
+        /// <summary>
         /// txtJobSearch 控件。
         /// </summary>
         /// <remarks>

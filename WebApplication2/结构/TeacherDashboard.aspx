@@ -130,7 +130,12 @@
                 padding: 8px 16px;
             }
         }
-
+        /* 让按钮横向排列并保持间距 */
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
         /* 分页样式 */
         .pagination-container {
             text-align: center;
@@ -159,14 +164,22 @@
         <div class="container">
             <h2 class="text-center mb-4">教师工作台</h2>
             
-            <div class="row mb-4">
-                <div class="col-md-6">
+            <!-- 操作按钮横向排列 -->
+            <div class="button-row">
+                <div class="col-md-3">
                     <asp:Button ID="btnRefresh" runat="server" Text="刷新" CssClass="btn btn-secondary mb-3" OnClick="btnRefresh_Click" />
                 </div>
-                <div class="col-md-6 text-end">
+                <div class="col-md-3 text-center">
                     <asp:Button ID="btnViewStatistics" runat="server" Text="查看数据统计" OnClick="btnViewStatistics_Click" CssClass="btn btn-info" />
                 </div>
+                <div class="col-md-3 text-center">
+                    <asp:Button ID="btnPublishNotification" runat="server" Text="发布通知" CssClass="btn btn-warning" OnClick="btnPublishNotification_Click" />
+                </div>
+                <div class="col-md-3 text-end">
+                    <asp:Button ID="btnAddjob" runat="server" Text="添加工作" CssClass="btn btn-secondary mb-3" OnClick="btn_AddJob" />
+                </div>
             </div>
+
 
             <!-- 岗位管理 -->
             <div class="card">
@@ -184,7 +197,7 @@
                     </div>
                     
                     <asp:GridView ID="gvJobs" runat="server" AutoGenerateColumns="false" CssClass="table table-striped table-hover"
-                        OnRowCommand="gvJobs_RowCommand" AllowPaging="true" PageSize="5" OnPageIndexChanging="gvJobs_PageIndexChanging">
+                        OnRowCommand="gvJobs_RowCommand" AllowPaging="true" PageSize="5" OnPageIndexChanging="gvJobs_PageIndexChanging" EmptyDataText="没有符合条件的岗位。">
                         <Columns>
                             <asp:BoundField DataField="Title" HeaderText="岗位标题" SortExpression="Title" />
                             <asp:BoundField DataField="Description" HeaderText="岗位描述" SortExpression="Description" />
@@ -218,7 +231,7 @@
                     </div>
 
                     <asp:GridView ID="gvApplications" runat="server" AutoGenerateColumns="false" CssClass="table table-striped table-hover"
-                        OnRowCommand="gvApplications_RowCommand" DataKeyNames="ApplicationId" AllowPaging="true" PageSize="5" OnPageIndexChanging="gvApplications_PageIndexChanging">
+                        OnRowCommand="gvApplications_RowCommand" DataKeyNames="ApplicationId" AllowPaging="true" PageSize="5" OnPageIndexChanging="gvApplications_PageIndexChanging" EmptyDataText="没有审核记录。">
                         <Columns>
                             <asp:BoundField DataField="StudentUsername" HeaderText="学生用户名" SortExpression="StudentUsername" />
                             <asp:BoundField DataField="JobTitle" HeaderText="岗位标题" SortExpression="JobTitle" />
